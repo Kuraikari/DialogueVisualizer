@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DialoguesServiceLibrary.Services
 {
-    internal class DialogueService
+    public class DialogueService
     {
     }
 }
