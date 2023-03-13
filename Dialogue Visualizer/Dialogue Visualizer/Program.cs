@@ -1,7 +1,12 @@
+
+using Dialogue_Visualizer.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<DialogueDbContext>();
 
 var app = builder.Build();
 

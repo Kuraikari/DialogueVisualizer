@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DialoguesServiceLibrary.Services
+namespace Dialogue_Visualizer.Helpers
 {
-    internal class DialogueDbContext : DbContext
+    public class DialogueDbContext : DbContext
     {
         protected readonly IConfiguration Configuration;
         public DialogueDbContext(IConfiguration configuration)
@@ -31,5 +31,6 @@ namespace DialoguesServiceLibrary.Services
         }
 
         public DbSet<Dialogue> _dialogues { get; set; }
+        public DbSet<Scene> _scene { get; set; }
     }
 }
