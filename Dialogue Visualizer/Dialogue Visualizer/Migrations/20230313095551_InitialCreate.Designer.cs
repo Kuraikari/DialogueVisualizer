@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dialogue_Visualizer.Migrations
 {
     [DbContext(typeof(DialogueDbContext))]
-    [Migration("20230313071513_InitialCreate")]
+    [Migration("20230313095551_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,7 +19,7 @@ namespace Dialogue_Visualizer.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.3");
 
-            modelBuilder.Entity("DialoguesServiceLibrary.Models.Dialogue", b =>
+            modelBuilder.Entity("Dialogue_Visualizer.Models.Dialogue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,10 +46,10 @@ namespace Dialogue_Visualizer.Migrations
 
                     b.HasIndex("SceneId");
 
-                    b.ToTable("_dialogues");
+                    b.ToTable("Dialogue");
                 });
 
-            modelBuilder.Entity("DialoguesServiceLibrary.Models.Scene", b =>
+            modelBuilder.Entity("Dialogue_Visualizer.Models.Scene", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,12 +65,12 @@ namespace Dialogue_Visualizer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("_scene");
+                    b.ToTable("Scene");
                 });
 
-            modelBuilder.Entity("DialoguesServiceLibrary.Models.Dialogue", b =>
+            modelBuilder.Entity("Dialogue_Visualizer.Models.Dialogue", b =>
                 {
-                    b.HasOne("DialoguesServiceLibrary.Models.Scene", "Scene")
+                    b.HasOne("Dialogue_Visualizer.Models.Scene", "Scene")
                         .WithMany()
                         .HasForeignKey("SceneId")
                         .OnDelete(DeleteBehavior.Cascade)

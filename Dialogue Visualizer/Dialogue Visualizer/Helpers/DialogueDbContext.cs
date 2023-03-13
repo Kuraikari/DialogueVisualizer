@@ -1,4 +1,4 @@
-﻿using DialoguesServiceLibrary.Models;
+﻿using Dialogue_Visualizer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -30,7 +30,7 @@ namespace Dialogue_Visualizer.Helpers
             }
         }
 
-        public DbSet<Dialogue> _dialogues { get; set; }
-        public DbSet<Scene> _scene { get; set; }
+        public DbSet<Dialogue> Dialogue { get; set; }
+        public DbSet<Scene> Scene { get; set; }
     }
 }

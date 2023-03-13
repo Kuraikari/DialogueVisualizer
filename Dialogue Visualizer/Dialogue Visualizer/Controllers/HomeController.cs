@@ -1,5 +1,8 @@
-﻿using Dialogue_Visualizer.Models;
+﻿using Dialogue_Visualizer.Helpers;
+using Dialogue_Visualizer.ViewModels;
+using DialoguesServiceLibrary.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Dialogue_Visualizer.Controllers
@@ -7,15 +10,21 @@ namespace Dialogue_Visualizer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly DialogueDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DialogueService _dialogueService;
+
+        public HomeController(ILogger<HomeController> logger, DialogueDbContext context, DialogueService dialogueService)
         {
             _logger = logger;
+            _context = context;
+            _dialogueService = dialogueService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var dialogues = await _context.Dialogue.ToListAsync();
+            return View(dialogues);
         }
 
         public IActionResult Privacy()

@@ -1,6 +1,6 @@
 ﻿using System.Dynamic;
 
-namespace Dialogue_Visualizer.Models
+namespace Dialogue_Visualizer.ViewModels
 {
     public class SettingsModel
     {

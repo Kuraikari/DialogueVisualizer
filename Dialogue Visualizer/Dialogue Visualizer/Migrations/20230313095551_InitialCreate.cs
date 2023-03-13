@@ -11,7 +11,7 @@ namespace Dialogue_Visualizer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "_scene",
+                name: "Scene",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -21,11 +21,11 @@ namespace Dialogue_Visualizer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__scene", x => x.Id);
+                    table.PrimaryKey("PK_Scene", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "_dialogues",
+                name: "Dialogue",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -38,18 +38,18 @@ namespace Dialogue_Visualizer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__dialogues", x => x.Id);
+                    table.PrimaryKey("PK_Dialogue", x => x.Id);
                     table.ForeignKey(
-                        name: "FK__dialogues__scene_SceneId",
+                        name: "FK_Dialogue_Scene_SceneId",
                         column: x => x.SceneId,
-                        principalTable: "_scene",
+                        principalTable: "Scene",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX__dialogues_SceneId",
-                table: "_dialogues",
+                name: "IX_Dialogue_SceneId",
+                table: "Dialogue",
                 column: "SceneId");
         }
 
@@ -57,10 +57,10 @@ namespace Dialogue_Visualizer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "_dialogues");
+                name: "Dialogue");
 
             migrationBuilder.DropTable(
-                name: "_scene");
+                name: "Scene");
         }
     }
 }
