@@ -1,0 +1,18 @@
+﻿.dialogue-block {
+    position: absolute;
+    border: 1px solid black;
+    background-color: #F08090;
+    width: 250px;
+    height: 100px;
+}
+
+.draggable {
+    cursor: move;
+}
+
+#canvas {
+    border: rgba(50,50,50,0.25) 1px solid;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}

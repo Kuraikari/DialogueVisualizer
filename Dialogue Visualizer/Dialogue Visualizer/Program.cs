@@ -1,6 +1,7 @@
 
 using Dialogue_Visualizer.Helpers;
-using DialoguesServiceLibrary.Services;
+using Dialogue_Visualizer.Repositories;
+using Dialogue_Visualizer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DialogueDbContext>();
-builder.Services.AddScoped<DialogueService>();
+builder.Services.AddTransient<DialogueRepository>();
+builder.Services.AddTransient<DialogueService>();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

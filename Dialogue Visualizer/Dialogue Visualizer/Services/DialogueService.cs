@@ -10,7 +10,7 @@ namespace Dialogue_Visualizer.Services
 {
     public class DialogueService
     {
-        private readonly DialogueRepository _dialogRepo;
+        public DialogueRepository _dialogRepo;
 
         public DialogueService(DialogueRepository dialogRepo)
         {

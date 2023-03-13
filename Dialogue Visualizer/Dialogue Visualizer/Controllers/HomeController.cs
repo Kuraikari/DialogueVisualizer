@@ -1,6 +1,9 @@
 ﻿using Dialogue_Visualizer.Helpers;
+using Dialogue_Visualizer.Models;
+using Dialogue_Visualizer.Services;
 using Dialogue_Visualizer.ViewModels;
-using DialoguesServiceLibrary.Services;
+using Dialogue_Visualizer.ViewModels.Dialogues;
+using Dialogue_Visualizer.ViewModels.Structs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -24,7 +27,83 @@ namespace Dialogue_Visualizer.Controllers
         public async Task<IActionResult> Index()
         {
             var dialogues = await _context.Dialogue.ToListAsync();
-            return View(dialogues);
+
+            List<DialogueBlockVM> blockVM = new();
+            foreach (var item in dialogues)
+            {
+                blockVM.Add(new()
+                {
+                    Dialogue = item,
+                    Color = "#F08090",
+                    Width = 250,
+                    Height = 100,
+                    X = 0,
+                    Y = 0,
+                });
+            }
+
+            var viewModel = new DialogueViewModel()
+            {
+                DialogueBlocks = blockVM
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> DialogueBlueprints()
+        {
+            var dialogues = await _context.Dialogue.ToListAsync();
+
+            List<DialogueBlockVM> blockVM = new();
+            foreach (var item in dialogues)
+            {
+                blockVM.Add(new()
+                {
+                    Dialogue = item,
+                    Color = "#F08090",
+                    Width = 250,
+                    Height = 100,
+                    X = 0,
+                    Y = 0,
+                });
+            }
+
+            var viewModel = new DialogueViewModel()
+            {
+                DialogueBlocks = blockVM
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> GetDialogueBlocks()
+        {
+            var blocks = await _context.DialogueBlocks.ToListAsync();
+            return Json(blocks);
+        }
+
+        [HttpPost]
+        public IActionResult AddDialogueBlock(DialogueBlock block)
+        {
+            try
+            {
+                if (block != null)
+                {
+                    block.Id = _context.DialogueBlocks.Count() > 0 ? _context.DialogueBlocks.Max(b  => b.Id) + 1 : 1;
+                    block.Dialogue.Id = _context.Dialogue.Count() > 0 ? _context.Dialogue.Max(b => b.Id) + 1 : 1;
+
+                    _context.Dialogue.Add(block.Dialogue);
+                    _context.DialogueBlocks.Add(block);
+                    _context.SaveChanges();
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+            
+            
         }
 
         public IActionResult Privacy()

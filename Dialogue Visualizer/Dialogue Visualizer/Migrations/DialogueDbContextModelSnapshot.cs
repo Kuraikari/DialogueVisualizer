@@ -46,6 +46,38 @@ namespace Dialogue_Visualizer.Migrations
                     b.ToTable("Dialogue");
                 });
 
+            modelBuilder.Entity("Dialogue_Visualizer.Models.DialogueBlock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DialogueId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("X")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DialogueId");
+
+                    b.ToTable("DialogueBlocks");
+                });
+
             modelBuilder.Entity("Dialogue_Visualizer.Models.Scene", b =>
                 {
                     b.Property<int>("Id")
@@ -74,6 +106,17 @@ namespace Dialogue_Visualizer.Migrations
                         .IsRequired();
 
                     b.Navigation("Scene");
+                });
+
+            modelBuilder.Entity("Dialogue_Visualizer.Models.DialogueBlock", b =>
+                {
+                    b.HasOne("Dialogue_Visualizer.Models.Dialogue", "Dialogue")
+                        .WithMany()
+                        .HasForeignKey("DialogueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dialogue");
                 });
 #pragma warning restore 612, 618
         }

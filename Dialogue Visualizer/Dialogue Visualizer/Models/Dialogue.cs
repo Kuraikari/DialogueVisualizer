@@ -6,7 +6,7 @@ namespace Dialogue_Visualizer.Models
     [PrimaryKey("Id")]
     public class Dialogue
     {    
-        int Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Speaker { get; set; } = string.Empty;
         [Required]

@@ -1,9 +1,9 @@
-﻿using DialoguesServiceLibrary.Models;
+﻿using Dialogue_Visualizer.ViewModels.Structs;
 
 namespace Dialogue_Visualizer.ViewModels.Dialogues
 {
     public class DialogueViewModel
     {
-        public Dialogue Dialogue { get; set; }
+        public IEnumerable<DialogueBlockVM> DialogueBlocks { get; set; } = new List<DialogueBlockVM>();
     }
 }

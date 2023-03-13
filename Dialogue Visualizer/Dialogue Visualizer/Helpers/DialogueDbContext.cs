@@ -32,5 +32,6 @@ namespace Dialogue_Visualizer.Helpers
 
         public DbSet<Dialogue> Dialogue { get; set; }
         public DbSet<Scene> Scene { get; set; }
+        public DbSet<DialogueBlock> DialogueBlocks { get; set; }
     }
 }
