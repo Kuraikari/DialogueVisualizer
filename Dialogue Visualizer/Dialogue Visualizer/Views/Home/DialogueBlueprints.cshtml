@@ -2,22 +2,22 @@
     ViewBag.Title = "Dialogue Blueprint";
 }
 
-<canvas id="canvas" width="800" height="600"></canvas>
+<canvas id="canvas" width="1490" height="890"></canvas>
 
 @section scripts {
     <script>
         $(document).ready(function () {
 
             function AddNewBlock(block) {
-                console.log(block);
+                var dimensions = {
+                    height: (block.height > 0) ? block.height : 100,
+                    width: (block.width > 0) ? block.width : 250
+                }
 
                 var element = $('<div>')
                     .addClass('dialogue-block draggable')
-                    .attr('data-id', block.Id)
-                    .css({
-                        left: block.X + 'px',
-                        top: block.Y + 'px'
-                    })
+                    .attr('data-id', block.id)
+                    .attr('xmlns', 'https://www.w3.org/1999/xhtml')
                     .text(block.dialogue.speaker + ': ' + block.dialogue.text);
 
                 element.mousedown(function (event) {
@@ -39,8 +39,38 @@
                     $(document).off('mousemove');
                 });
 
-                console.log($('#canvas'));
-                $('#canvas').append(element);
+                var randX = Math.random() * 500;
+                var randY = Math.random() * 500;
+
+                var style = `border: black 1px solid;` +
+                            `border-radius: 4px;` +
+                            `background-color: ${block.color}`;
+                
+                var canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext('2d');
+                var data =  `<svg xmlns="http://www.w3.org/2000/svg" width="1490" height="890">` +
+                                `<foreignObject width="${dimensions.width}" height="${dimensions.height}" x="${block.x}" y="${block.y}" style="${style}">` +
+                                    `${element[0].outerHTML}` +
+                                `</foreignObject>` +
+                            `</svg>`;
+
+                var DOMURL = window.URL || window.webkitURL || window;
+
+                var img = new Image();
+                var svg = new Blob([data], {
+                    type: 'image/svg+xml;charset=utf-8'
+                });
+                var url = DOMURL.createObjectURL(svg);
+
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0);
+                    DOMURL.revokeObjectURL(url);
+                }
+
+                canvas.innerHTML = data;
+
+                img.src = url;
+
             }
 
             function GetBlocks() {
@@ -56,8 +86,10 @@
             $('#canvas').on('dblclick', function (event) {
                 var x = event.pageX - $(this).offset().left;
                 var y = event.pageY - $(this).offset().top;
+                var height = 100;
+                var width = 250;
 
-                var block = { dialogue: { speaker: "[speaker]", text: "[text]"} , x: x, y: y }
+                var block = { dialogue: { speaker: "[speaker]", text: "[text]"} , x: x, y: y, height: height, width: width, color: '#F08090'}
 
                 $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
                     if (result.success) {
@@ -73,8 +105,10 @@
                 var text = $('#Text').val();
                 var x = 0;
                 var y = 0;
+                var height = 100;
+                var width = 250;
 
-                var block = { dialogue: { speaker: speaker, text: text }, x: x, y: y }
+                var block = { dialogue: { speaker: speaker, text: text }, x: x, y: y, height: height, width: width, color: '#F08090' }
 
                 $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
                     if (result.success) {

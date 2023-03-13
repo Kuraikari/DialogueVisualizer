@@ -78,6 +78,7 @@ namespace Dialogue_Visualizer.Controllers
 
         public async Task<IActionResult> GetDialogueBlocks()
         {
+            var dialogues = await _context.Dialogue.ToListAsync();
             var blocks = await _context.DialogueBlocks.ToListAsync();
             return Json(blocks);
         }
