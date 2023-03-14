@@ -1,121 +1,157 @@
 ﻿@{
     ViewBag.Title = "Dialogue Blueprint";
-}
 
-<canvas id="canvas" width="1490" height="890"></canvas>
+    
+
+}
+<div id="canvas-outer">
+    @*<canvas id="canvas" width="1490" height="890"></canvas>*@
+</div>
+
 
 @section scripts {
     <script>
         $(document).ready(function () {
 
+            function dragElement(elmnt) {
+
+                console.log(elmnt);
+
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (document.getElementById(elmnt.id + "header")) {
+                    // if present, the header is where you move the DIV from:
+                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                } else {
+                    // otherwise, move the DIV from anywhere inside the DIV:
+                    elmnt.onmousedown = dragMouseDown;
+                }
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // calculate the new cursor position:
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // set the element's new position:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    // stop moving when mouse button is released:
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+            }
+
             function AddNewBlock(block) {
                 var dimensions = {
-                    height: (block.height > 0) ? block.height : 100,
-                    width: (block.width > 0) ? block.width : 250
+                    h: (block.height > 0) ? block.height : 100,
+                    w: (block.width > 0) ? block.width : 250
                 }
 
-                var element = $('<div>')
-                    .addClass('dialogue-block draggable')
-                    .attr('data-id', block.id)
-                    .attr('xmlns', 'https://www.w3.org/1999/xhtml')
-                    .text(block.dialogue.speaker + ': ' + block.dialogue.text);
+                var position = {
+                    x: block.x,
+                    y: block.y
+                };
 
-                element.mousedown(function (event) {
-                    var startX = event.pageX - parseInt($(this).css('left'));
-                    var startY = event.pageY - parseInt($(this).css('top'));
+                var style = [
+                    {
+                        property: `border`,
+                        value: `black 1px solid`
+                    },
+                    {
+                        property: `border-radius`,
+                        value: `4px`
+                    },
+                    {
+                        property: `background-color`,
+                        value: `${block.color}`
+                    },
+                    {
+                        property: `text-align`,
+                        value: `center;`
+                    }
+                ];
 
-                    $(document).on('mousemove', function (event) {
-                        var x = event.pageX - startX;
-                        var y = event.pageY - startY;
+                var elId = `${block.dialogue.speaker}-${block.dialogue.text}-${block.id}`;
+                var builder = new HTMLElementBuilder(elId, style, dimensions, position);
+                builder.text = `${block.dialogue.speaker} : ${block.dialogue.text}`;
 
-                        element.css({
-                            left: x + 'px',
-                            top: Y + 'px'
-                        });
-                    });
-                });
+                var element = builder.CreateElement().GetElement();
 
-                $(document).on('mouseup', function (event) {
-                    $(document).off('mousemove');
-                });
 
-                var randX = Math.random() * 500;
-                var randY = Math.random() * 500;
-
-                var style = `border: black 1px solid;` +
-                            `border-radius: 4px;` +
-                            `background-color: ${block.color}`;
-                
-                var canvas = document.getElementById('canvas');
-                var ctx = canvas.getContext('2d');
-                var data =  `<svg xmlns="http://www.w3.org/2000/svg" width="1490" height="890">` +
-                                `<foreignObject width="${dimensions.width}" height="${dimensions.height}" x="${block.x}" y="${block.y}" style="${style}">` +
-                                    `${element[0].outerHTML}` +
-                                `</foreignObject>` +
-                            `</svg>`;
-
-                var DOMURL = window.URL || window.webkitURL || window;
-
-                var img = new Image();
-                var svg = new Blob([data], {
-                    type: 'image/svg+xml;charset=utf-8'
-                });
-                var url = DOMURL.createObjectURL(svg);
-
-                img.onload = function() {
-                    ctx.drawImage(img, 0, 0);
-                    DOMURL.revokeObjectURL(url);
-                }
-
-                canvas.innerHTML = data;
-
-                img.src = url;
-
+                document.querySelector('#canvas-outer').appendChild(element);
+                dragElement(document.getElementById(elId));
             }
+
+            var diaBlocks = [];
 
             function GetBlocks() {
                 $.get("@Url.Action("GetDialogueBlocks", "Home")", function (blocks) {
                     $.each(blocks, function (index, block) {
                         AddNewBlock(block);
+                        diaBlocks[`${block.x},${block.y}`] = block;
                     });
                 });
+
+                console.log(diaBlocks);
             }
 
             GetBlocks();
 
-            $('#canvas').on('dblclick', function (event) {
-                var x = event.pageX - $(this).offset().left;
-                var y = event.pageY - $(this).offset().top;
-                var height = 100;
-                var width = 250;
+            //$('#canvas').on('dblclick', function (event) {
+            //    var x = event.pageX - $(this).offset().left;
+            //    var y = event.pageY - $(this).offset().top;
+            //    var height = 100;
+            //    var width = 250;
 
-                var block = { dialogue: { speaker: "[speaker]", text: "[text]"} , x: x, y: y, height: height, width: width, color: '#F08090'}
+            //    if (diaBlocks[`${x},${y}`] != null) {
+            //        return;
+            //    }
 
-                $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
-                    if (result.success) {
-                        AddNewBlock(block);
-                    }
-                })
-            });
+            //    var block = { dialogue: { speaker: "[speaker]", text: "[text]" }, x: x, y: y, height: height, width: width, color: '#F08090' }
 
-            $('form').submit(function (event) {
-                event.preventDefault();
+            //    $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
+            //        if (result.success) {
+            //            AddNewBlock(block);
+            //        }
+            //    })
+            //});
 
-                var speaker = $('#Speaker').val();
-                var text = $('#Text').val();
-                var x = 0;
-                var y = 0;
-                var height = 100;
-                var width = 250;
+            //$('form').submit(function (event) {
+            //    event.preventDefault();
 
-                var block = { dialogue: { speaker: speaker, text: text }, x: x, y: y, height: height, width: width, color: '#F08090' }
+            //    var speaker = $('#Speaker').val();
+            //    var text = $('#Text').val();
+            //    var x = 0;
+            //    var y = 0;
+            //    var height = 100;
+            //    var width = 250;
 
-                $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
-                    if (result.success) {
-                        AddNewBlock(block);
-                    }
-                });
-            });
+            //    var block = { dialogue: { speaker: speaker, text: text }, x: x, y: y, height: height, width: width, color: '#F08090' }
+
+            //    $.post('@Url.Action("AddDialogueBlock", "Home")', block, function (result) {
+            //        if (result.success) {
+            //            AddNewBlock(block);
+            //        }
+            //    });
+            //});
+
+            
         });
     </script>
 }

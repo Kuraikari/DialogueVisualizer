@@ -3,27 +3,30 @@
     ViewData["Title"] = "Home Page";
 }
 
-<table>
+<table class="table">
     <thead>
-        <tr>
-            <th>ID</th>
-            <th>Speaker</th>
-            <th>Text</th>
-            <th></th>
+        <tr scope="row">
+            <th scope="col">ID</th>
+            <th scope="col">Speaker</th>
+            <th scope="col">Text</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.DialogueBlocks)
         {
-            <tr>
-                <td>
+            <tr scope="row">
+                <td scope="col">
                     @Model.DialogueBlocks.ToList().IndexOf(item)
                 </td>
-                <td>
+                <td scope="col">
                     @item.Dialogue.Speaker
                 </td>
-                <td>
+                <td scope="col">
                     @item.Dialogue.Text
+                </td>
+                <td scope="col">
+
                 </td>
             </tr>
         }

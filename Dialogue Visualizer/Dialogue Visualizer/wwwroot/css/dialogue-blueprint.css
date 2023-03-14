@@ -6,8 +6,14 @@
     height: 100px;
 }
 
-.draggable {
+.dialogue-block > div.header {
+    padding: 12px;
+    background-color: rgba(40, 40, 40, 0.25);
     cursor: move;
+}
+
+.dialogue-block div {
+    padding: 4px;
 }
 
 #canvas {
