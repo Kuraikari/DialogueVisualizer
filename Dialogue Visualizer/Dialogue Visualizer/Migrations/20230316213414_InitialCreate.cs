@@ -32,6 +32,7 @@ namespace Dialogue_Visualizer.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Speaker = table.Column<string>(type: "TEXT", nullable: false),
                     Text = table.Column<string>(type: "TEXT", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false),
                     IsQuestion = table.Column<bool>(type: "INTEGER", nullable: false),
                     FollowUpTextId = table.Column<int>(type: "INTEGER", nullable: false),
                     SceneId = table.Column<int>(type: "INTEGER", nullable: false)

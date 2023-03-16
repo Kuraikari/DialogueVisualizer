@@ -12,12 +12,10 @@
 @section scripts {
     <script>
         $(document).ready(function () {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
             function dragElement(elmnt) {
 
-                console.log(elmnt);
-
-                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                 if (document.getElementById(elmnt.id + "header")) {
                     // if present, the header is where you move the DIV from:
                     document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
@@ -93,9 +91,9 @@
 
                 var element = builder.CreateElement().GetElement();
 
-
                 document.querySelector('#canvas-outer').appendChild(element);
                 dragElement(document.getElementById(elId));
+                contextMenu(elId);
             }
 
             var diaBlocks = [];
@@ -107,8 +105,6 @@
                         diaBlocks[`${block.x},${block.y}`] = block;
                     });
                 });
-
-                console.log(diaBlocks);
             }
 
             GetBlocks();

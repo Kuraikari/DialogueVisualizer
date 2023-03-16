@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dialogue_Visualizer.Migrations
 {
     [DbContext(typeof(DialogueDbContext))]
-    [Migration("20230314143649_InitialCreate")]
+    [Migration("20230316213414_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,6 +29,9 @@ namespace Dialogue_Visualizer.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsQuestion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SceneId")

@@ -32,8 +32,11 @@ class HTMLElementBuilder {
             el.style.setProperty(style.property, style.value);
         });
 
-        el.style.setProperty("width", this.size.w);
-        el.style.setProperty("height", this.size.h);
+        el.style.width = this.size.w;
+        el.style.height = this.size.h;
+
+        el.style.top = this.position.y + "px";
+        el.style.left = this.position.x + "px";
 
         el.setAttribute("posX", this.position.x);
         el.setAttribute("posY", this.position.y);

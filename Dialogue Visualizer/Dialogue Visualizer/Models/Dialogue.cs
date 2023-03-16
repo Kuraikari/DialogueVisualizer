@@ -11,6 +11,7 @@ namespace Dialogue_Visualizer.Models
         public string Speaker { get; set; } = string.Empty;
         [Required]
         public string Text { get; set; } = string.Empty;
+        public int Order { get; set; }
         public bool IsQuestion { get; set; }
         public int FollowUpTextId { get; set; }
         public Scene Scene { get; set; } = new Scene();

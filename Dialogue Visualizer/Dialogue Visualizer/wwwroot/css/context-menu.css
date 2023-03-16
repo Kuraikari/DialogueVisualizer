@@ -1,0 +1,60 @@
+﻿#ctxMenu {
+    display: none;
+    z-index: 100;
+}
+
+menu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 3ch;
+    width: 3ch;
+    padding: 0;
+    margin: 0;
+    border: 1px solid;
+    background-color: white;
+    font-weight: normal;
+    white-space: nowrap;
+    text-align:center;
+}
+
+    menu:hover {
+        background-color: #eef;
+    }
+
+        menu:hover > menu {
+            display: block;
+        }
+
+    menu > menu:not(:last-child) {
+        border-bottom: none;
+    }
+
+    menu > menu:last-child:not(:has(menu)) {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    menu:first-of-type:not(:has(menu)) {
+        border-top-right-radius: 4px;
+    }
+
+    menu:first-of-type:not(:first-child):has(menu) {
+        border-top-left-radius: 4px;
+    }
+
+    menu > menu {
+        position:relative;
+        display: none;
+        left: 100%;
+        width: 100px;
+        top: -2.9ch;
+    }
+
+    menu[label]:before {
+        content: attr(label);
+    }
+
+    menu:not([label]):before {
+        content: "\2630";
+    }

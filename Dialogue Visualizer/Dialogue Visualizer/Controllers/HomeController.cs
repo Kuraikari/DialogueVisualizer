@@ -24,8 +24,33 @@ namespace Dialogue_Visualizer.Controllers
             _dialogueService = dialogueService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool seed = false)
         {
+            if (seed)
+            {
+                AddDialogueBlock(new DialogueBlock()
+                {
+                    Color = "#444",
+                    Width = 250,
+                    Height = 150,
+                    Dialogue = new Dialogue()
+                    {
+                        Text = "This is some text",
+                        Speaker = "You",
+                        Order = 0,
+                        Scene = new Scene()
+                        {
+                            Name = "NULL",
+                            Description = "NULL",
+                        },
+                        IsQuestion = false,
+                        FollowUpTextId = -1,
+                    },
+                    X = 250,
+                    Y = 350
+                });
+            }
+
             var dialogues = await _context.Dialogue.ToListAsync();
 
             List<DialogueBlockVM> blockVM = new();
@@ -50,21 +75,27 @@ namespace Dialogue_Visualizer.Controllers
             return View(viewModel);
         }
 
+        public IActionResult ContextView(string func)
+        {
+            var test = PartialView("_DialogueBlockForm");
+            return test;
+        }
+
         public async Task<IActionResult> DialogueBlueprints()
         {
-            var dialogues = await _context.Dialogue.ToListAsync();
+            var dialogues = await _context.DialogueBlocks.ToListAsync();
 
             List<DialogueBlockVM> blockVM = new();
             foreach (var item in dialogues)
             {
                 blockVM.Add(new()
                 {
-                    Dialogue = item,
-                    Color = "#F08090",
-                    Width = 250,
-                    Height = 100,
-                    X = 0,
-                    Y = 0,
+                    Dialogue = item.Dialogue,
+                    Color = item.Color,
+                    Width = item.Width,
+                    Height = item.Height,
+                    X = item.X,
+                    Y = item.Y,
                 });
             }
 
@@ -90,8 +121,8 @@ namespace Dialogue_Visualizer.Controllers
             {
                 if (block != null)
                 {
-                    block.Id = _context.DialogueBlocks.Count() > 0 ? _context.DialogueBlocks.Max(b  => b.Id) + 1 : 1;
-                    block.Dialogue.Id = _context.Dialogue.Count() > 0 ? _context.Dialogue.Max(b => b.Id) + 1 : 1;
+                    block.Id = _context.DialogueBlocks.Any() ? _context.DialogueBlocks.Max(b  => b.Id) + 1 : 1;
+                    block.Dialogue.Id = _context.Dialogue.Any() ? _context.Dialogue.Max(b => b.Id) + 1 : 1;
 
                     _context.Dialogue.Add(block.Dialogue);
                     _context.DialogueBlocks.Add(block);
@@ -102,9 +133,7 @@ namespace Dialogue_Visualizer.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
-            }
-            
-            
+            } 
         }
 
         public IActionResult Privacy()

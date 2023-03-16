@@ -28,6 +28,9 @@ namespace Dialogue_Visualizer.Migrations
                     b.Property<bool>("IsQuestion")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SceneId")
                         .HasColumnType("INTEGER");
 
