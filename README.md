@@ -4,7 +4,7 @@ A simple MVC Web application to create dialogues, with the ability to return a J
 ## Contents
 | Link | Page |
 |------|------|
-|      |      |
+|[Introduction](#introduction)    |      |
 |      |      |
 |      |      |
 
