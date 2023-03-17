@@ -1,20 +1,21 @@
 ﻿@{
     ViewBag.Title = "Dialogue Blueprint";
-
-    
-
 }
 <div id="canvas-outer">
     @*<canvas id="canvas" width="1490" height="890"></canvas>*@
 </div>
 
-
 @section scripts {
     <script>
         $(document).ready(function () {
-            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            var connectors = [];
+            var diaBlocks = {
+                
+            };
 
             function dragElement(elmnt) {
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
                 if (document.getElementById(elmnt.id + "header")) {
                     // if present, the header is where you move the DIV from:
@@ -85,24 +86,39 @@
                     }
                 ];
 
-                var elId = `${block.dialogue.speaker}-${block.dialogue.text}-${block.id}`;
+                const idPrefix = 'dialogue-block';
+                var elId = `${idPrefix}-${block.id}`;
                 var builder = new HTMLElementBuilder(elId, style, dimensions, position);
                 builder.text = `${block.dialogue.speaker} : ${block.dialogue.text}`;
 
                 var element = builder.CreateElement().GetElement();
-
                 document.querySelector('#canvas-outer').appendChild(element);
-                dragElement(document.getElementById(elId));
-                contextMenu(elId);
             }
-
-            var diaBlocks = [];
 
             function GetBlocks() {
                 $.get("@Url.Action("GetDialogueBlocks", "Home")", function (blocks) {
                     $.each(blocks, function (index, block) {
                         AddNewBlock(block);
-                        diaBlocks[`${block.x},${block.y}`] = block;
+                        const prop = `${block.x}-${block.y}`
+                        diaBlocks[prop] = block;
+
+                        const idPrefix = 'dialogue-block';
+                        const idSuffix = '';
+                        var elId = `${idPrefix}-${block.id}${idSuffix}`;
+
+                        if (Object.keys(diaBlocks).length > 1) {
+                            var connector = new muConnector({
+                                ele1: `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`,
+                                ele2: `${elId}`,
+                                lineStyle: "4px solid black",
+                                defaultGap: -35
+                            });
+
+                            connector.Setup(connector, elId);
+                        }
+
+                        dragElement(document.getElementById(elId));
+                        contextMenu(elId);
                     });
                 });
             }
@@ -146,7 +162,6 @@
             //        }
             //    });
             //});
-
             
         });
     </script>

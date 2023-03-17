@@ -35,8 +35,8 @@ namespace Dialogue_Visualizer.Controllers
                     Height = 150,
                     Dialogue = new Dialogue()
                     {
-                        Text = "This is some text",
-                        Speaker = "You",
+                        Text = "This is a another new text",
+                        Speaker = "They",
                         Order = 0,
                         Scene = new Scene()
                         {
@@ -46,7 +46,7 @@ namespace Dialogue_Visualizer.Controllers
                         IsQuestion = false,
                         FollowUpTextId = -1,
                     },
-                    X = 250,
+                    X = 800,
                     Y = 350
                 });
             }
