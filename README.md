@@ -19,4 +19,4 @@ A simple MVC Web application to create dialogues, with the ability to return a J
 ## Planned Features
 * 
 
-[Visual Connections](/docs/assets/blueprint_visual_connection.png)
+[Visual Connections](./docs/assets/blueprint_visual_connection.png)
