@@ -108,14 +108,21 @@
                         var elId = `${idPrefix}-${block.id}${idSuffix}`;
 
                         if (Object.keys(diaBlocks).length > 1) {
+
+                            if (blocks.length - 1 == blocks.lastIndexOf(block)) {
+
+                            }
+
                             var connector = new muConnector({
                                 ele1: `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`,
                                 ele2: `${elId}`,
                                 lineStyle: "4px solid black",
                                 defaultGap: -35
                             });
+
+                            
                             connectors.push(connector);
-                            connector.Setup(connector, elId);
+                            
                         }
 
                         dragElement(document.getElementById(elId));
@@ -124,7 +131,13 @@
                 });
             }
 
+            function() {
+                var blockIndices = Object.keys(diaBlocks);
 
+                for (var i = 0; i < blockIndices.length; i++) {
+                    connectors
+                }
+            }
 
             GetBlocks();
 
