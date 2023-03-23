@@ -43,6 +43,7 @@ class HTMLElementBuilder {
 
 
         let elContent = document.createElement("div");
+        elContent.classList.add("dialogue-block-content");
         elContent.textContent = this.text;
 
         let elHeader = document.createElement("div");

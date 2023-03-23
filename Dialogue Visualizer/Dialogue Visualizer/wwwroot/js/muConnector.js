@@ -175,7 +175,6 @@ class muConnector {
                 ele.off('mousemove.muConnector');
                 //$(document).off('.muConnector');
             });
-
         });
     }
 }
