@@ -6,6 +6,7 @@ function contextMenu(elementId) {
         ctxMenu.style.display = "block";
         ctxMenu.style.left = (event.pageX - 10) + "px";
         ctxMenu.style.top = (event.pageY - 10) + "px";
+        ctxMenu.setAttribute("block-id", elementId);
     }, false);
     block.addEventListener("click", function (event) {
         var ctxMenu = document.getElementById("ctxMenu");

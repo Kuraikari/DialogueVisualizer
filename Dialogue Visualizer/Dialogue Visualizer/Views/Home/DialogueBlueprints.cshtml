@@ -1,26 +1,26 @@
-﻿@{
+﻿@model Dialogue_Visualizer.ViewModels.Dialogues.DialogueViewModel
+@{
     ViewBag.Title = "Dialogue Blueprint";
 }
-<div id="canvas-outer">
-    @*<canvas id="canvas" width="1490" height="890"></canvas>*@
-</div>
+
+<article>
+    @await Html.PartialAsync("_ContextMenu", Model.DialogueBlocks)
+    <div id="canvas-outer">
+        @*<canvas id="canvas" width="1490" height="890"></canvas>*@
+    </div>
+</article>
 
 @section scripts {
     <script>
         var connectors = [];
-        var diaBlocks = {
-
-        };
+        var diaBlocks = {};
         $(document).ready(function () {
-            
-            
-
             function dragElement(elmnt) {
                 var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-                if (document.getElementById(elmnt.id + "header")) {
+                if (document.getElementById(elmnt.id + "-header")) {
                     // if present, the header is where you move the DIV from:
-                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                    document.getElementById(elmnt.id + "-header").onmousedown = dragMouseDown;
                 } else {
                     // otherwise, move the DIV from anywhere inside the DIV:
                     elmnt.onmousedown = dragMouseDown;
@@ -106,37 +106,35 @@
                         const idPrefix = 'dialogue-block';
                         const idSuffix = '';
                         var elId = `${idPrefix}-${block.id}${idSuffix}`;
+                        var elId2 = `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`;
+
+                        console.log(blocks);
 
                         if (Object.keys(diaBlocks).length > 1) {
 
-                            if (blocks.length - 1 == blocks.lastIndexOf(block)) {
-
-                            }
-
                             var connector = new muConnector({
-                                ele1: `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`,
+                                ele1: `${elId2}`,
                                 ele2: `${elId}`,
                                 lineStyle: "4px solid black",
                                 defaultGap: -35
                             });
 
-                            
                             connectors.push(connector);
-                            
-                        }
 
-                        dragElement(document.getElementById(elId));
-                        contextMenu(elId);
+                            var diaKeys = Object.keys(diaBlocks);
+                            diaKeys.forEach(key => {
+                                var elementId = `${idPrefix}-${diaBlocks[key].id}`;
+                                dragElement(document.getElementById(elementId));
+                                contextMenu(elementId);
+                            });
+
+                            connectors.forEach(conn => {
+                                conn.Setup(conn, conn.ele1.id);
+                                conn.Setup(conn, conn.ele2.id);
+                            });
+                        }   
                     });
                 });
-            }
-
-            function() {
-                var blockIndices = Object.keys(diaBlocks);
-
-                for (var i = 0; i < blockIndices.length; i++) {
-                    connectors
-                }
             }
 
             GetBlocks();

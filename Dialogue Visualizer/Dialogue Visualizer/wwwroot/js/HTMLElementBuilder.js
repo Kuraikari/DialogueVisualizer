@@ -43,11 +43,12 @@ class HTMLElementBuilder {
 
 
         let elContent = document.createElement("div");
+        elContent.id = this.id + "-content";
         elContent.classList.add("dialogue-block-content");
         elContent.textContent = this.text;
 
         let elHeader = document.createElement("div");
-        elHeader.id = this.id + "header";
+        elHeader.id = this.id + "-header";
         elHeader.classList.add("header");
 
         el.append(elHeader, elContent);

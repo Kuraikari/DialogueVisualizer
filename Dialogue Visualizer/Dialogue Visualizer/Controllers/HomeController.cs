@@ -75,18 +75,22 @@ namespace Dialogue_Visualizer.Controllers
             return View(viewModel);
         }
 
-        public IActionResult ContextView(string func)
+        public IActionResult ContextView(string func = "", DialogueBlockVM? dialogueBlock = null)
         {
-            var test = PartialView("_DialogueBlockForm");
-            return test;
+            var dialogues = _context.Dialogue.ToList();
+            var blocks = _context.DialogueBlocks.ToList();
+            var test = new { func = func, model = dialogueBlock};
+
+            return PartialView("_DialogueBlockForm", test);
         }
 
         public async Task<IActionResult> DialogueBlueprints()
         {
-            var dialogues = await _context.DialogueBlocks.ToListAsync();
+            var dialogues = await _context.Dialogue.ToListAsync();
+            var dialogueblocks = await _context.DialogueBlocks.ToListAsync();
 
             List<DialogueBlockVM> blockVM = new();
-            foreach (var item in dialogues)
+            foreach (var item in dialogueblocks)
             {
                 blockVM.Add(new()
                 {

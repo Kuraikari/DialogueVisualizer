@@ -1,11 +1,23 @@
-﻿<menu id="ctxMenu" type="context">
+﻿@model IEnumerable<Dialogue_Visualizer.ViewModels.Structs.DialogueBlockVM>
+@{
+}
+<contextmenu id="ctxMenu" type="context">
     <menu label="Edit">
-        <menu label="Color" id="ctxMenuColor"  onclick="$('#contextView').load('@Url.Action("ContextView", "Home")', 'Color')"></menu>
-        <menu label="Speaker" id="ctxMenuSpeaker"></menu>
-        <menu label="Text" id="ctxMenuText"></menu>
+        <menu label="Color"
+              id="ctxMenuColor"
+              data-toggle="modal"
+              data-target="#dialogueBlockForm"
+              onclick="$('#contextView').load('@(Url.Action("ContextView", new {func = "Color", model = Model.First()}))')">
+        </menu>
+        <menu label="Speaker"
+              id="ctxMenuSpeaker">
+        </menu>
+        <menu label="Text"
+              id="ctxMenuText">
+        </menu>
     </menu>
-</menu>
+</contextmenu>
 
 <div id="contextView">
-    aa
+    CONTEXT MENU VIEW
 </div>

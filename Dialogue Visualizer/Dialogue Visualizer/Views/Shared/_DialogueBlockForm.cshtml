@@ -1,7 +1,7 @@
-﻿@model String
+﻿@model dynamic
 
 
-<div class="modal" tabindex="1" role="dialog">
+<div id="dialogueBlockForm" class="" tabindex="1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,11 +12,11 @@
             </div>
             <div class="modal-body">
                 @{
-                    switch (Model)
+                    switch (Model.func)
                     {
                         case "Color":
                             <form class="input-group">
-                                <label for="color">Dialogue-Block Color: </label>
+                                <label for="color">Dialogue-Block Color: @Model.model.Color</label>
                                 <input type="color" name="Color" id="color"/>
                             </form>
                             break;
