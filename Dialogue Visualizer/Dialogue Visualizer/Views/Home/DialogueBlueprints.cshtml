@@ -4,7 +4,14 @@
 }
 
 <article>
-    @await Html.PartialAsync("_ContextMenu", Model.DialogueBlocks)
+    <div class="project-details">
+        <div class="project">
+        </div>
+        <div class="current-scene">
+
+        </div>
+    </div>
+    @await Html.PartialAsync("_ContextMenu", Model.Projects.FirstOrDefault()?.Scenes.FirstOrDefault()?.Blocks)
     <div id="canvas-outer">
         @*<canvas id="canvas" width="1490" height="890"></canvas>*@
     </div>

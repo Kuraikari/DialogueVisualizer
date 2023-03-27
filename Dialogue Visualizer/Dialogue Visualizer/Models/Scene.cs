@@ -16,5 +16,6 @@ namespace Dialogue_Visualizer.Models
         public string Name { get; set; } = string.Empty;
         [Required]
         public string Description { get; set; } = string.Empty;
+        public IList<DialogueBlock> DialogueBlocks { get; set; } = new List<DialogueBlock>();
     }
 }

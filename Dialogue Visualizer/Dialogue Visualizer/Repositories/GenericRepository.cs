@@ -41,7 +41,7 @@ namespace Dialogue_Visualizer.Repositories
             }
         }
 
-        public virtual T? GetById(object id)
+        public virtual T? GetById(int id)
         {
             return dbSet.Find(id);
         }
@@ -70,6 +70,11 @@ namespace Dialogue_Visualizer.Repositories
         {
             var entity = dbSet.Find(id);
             Delete(entity);
+        }
+
+        public virtual void SaveChanges()
+        {
+            context.SaveChanges();
         }
     }
 }

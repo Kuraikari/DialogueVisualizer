@@ -3,7 +3,6 @@ using Dialogue_Visualizer.Models;
 using Dialogue_Visualizer.Services;
 using Dialogue_Visualizer.ViewModels;
 using Dialogue_Visualizer.ViewModels.Dialogues;
-using Dialogue_Visualizer.ViewModels.Structs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -28,49 +27,15 @@ namespace Dialogue_Visualizer.Controllers
         {
             if (seed)
             {
-                AddDialogueBlock(new DialogueBlock()
-                {
-                    Color = "#444",
-                    Width = 250,
-                    Height = 150,
-                    Dialogue = new Dialogue()
-                    {
-                        Text = "This is a another new text",
-                        Speaker = "They",
-                        Order = 0,
-                        Scene = new Scene()
-                        {
-                            Name = "NULL",
-                            Description = "NULL",
-                        },
-                        IsQuestion = false,
-                        FollowUpTextId = -1,
-                    },
-                    X = 800,
-                    Y = 350
-                });
+                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "Hello fellow young person. How are you doing?"));
+                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("George", "Young? I lived for 75 years!"));
+                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "I see. I lived for thousands of years. Everyone is young to me."));
             }
 
-            var dialogues = await _context.Dialogue.ToListAsync();
-
-            List<DialogueBlockVM> blockVM = new();
-            foreach (var item in dialogues)
-            {
-                blockVM.Add(new()
-                {
-                    Dialogue = item,
-                    Color = "#F08090",
-                    Width = 250,
-                    Height = 100,
-                    X = 0,
-                    Y = 0,
-                });
-            }
-
-            var viewModel = new DialogueViewModel()
-            {
-                DialogueBlocks = blockVM
-            };
+            var projects = await _context.Projects
+                .Include(project => project.Scenes)
+                .ToListAsync();
+            var viewModel = DomainModelToViewModel.ConvertToDialogueViewModel(projects);
 
             return View(viewModel);
         }
@@ -79,34 +44,18 @@ namespace Dialogue_Visualizer.Controllers
         {
             var dialogues = _context.Dialogue.ToList();
             var blocks = _context.DialogueBlocks.ToList();
-            var test = new { func = func, model = dialogueBlock};
+            var test = new { func, model = dialogueBlock};
 
             return PartialView("_DialogueBlockForm", test);
         }
 
         public async Task<IActionResult> DialogueBlueprints()
         {
-            var dialogues = await _context.Dialogue.ToListAsync();
-            var dialogueblocks = await _context.DialogueBlocks.ToListAsync();
-
-            List<DialogueBlockVM> blockVM = new();
-            foreach (var item in dialogueblocks)
-            {
-                blockVM.Add(new()
-                {
-                    Dialogue = item.Dialogue,
-                    Color = item.Color,
-                    Width = item.Width,
-                    Height = item.Height,
-                    X = item.X,
-                    Y = item.Y,
-                });
-            }
-
-            var viewModel = new DialogueViewModel()
-            {
-                DialogueBlocks = blockVM
-            };
+            var projects = await _context.Projects
+                .Include(project => project.Scenes)
+                .ThenInclude(scenes => scenes.Select(scene => scene.DialogueBlocks.Select(block => block.Dialogue)))
+                .ToListAsync();
+            var viewModel = DomainModelToViewModel.ConvertToDialogueViewModel(projects);
 
             return View(viewModel);
         }
@@ -127,17 +76,42 @@ namespace Dialogue_Visualizer.Controllers
                 {
                     block.Id = _context.DialogueBlocks.Any() ? _context.DialogueBlocks.Max(b  => b.Id) + 1 : 1;
                     block.Dialogue.Id = _context.Dialogue.Any() ? _context.Dialogue.Max(b => b.Id) + 1 : 1;
-
-                    _context.Dialogue.Add(block.Dialogue);
                     _context.DialogueBlocks.Add(block);
-                    _context.SaveChanges();
                 }
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
-            } 
+            }
+            finally
+            {
+                _context.SaveChanges();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddProjectAndScene(Project project, Scene scene)
+        {
+            try
+            {
+                if (project != null && scene != null)
+                {
+                    project.Id = _context.Projects.Any() ? _context.Projects.Max(b => b.Id) + 1 : 1;
+                    scene.Id = _context.Scene.Any() ? _context.Scene.Max(b => b.Id) + 1 : 1;
+                    project.Scenes.Add(scene);
+                    _context.Projects.Add(project);
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+            finally
+            {
+                _context.SaveChanges();
+            }
         }
 
         public IActionResult Privacy()

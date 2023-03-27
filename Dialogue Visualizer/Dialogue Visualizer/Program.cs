@@ -10,6 +10,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DialogueDbContext>();
 builder.Services.AddTransient<DialogueRepository>();
+builder.Services.AddTransient<DialogueBlockRepository>();
+builder.Services.AddTransient<ProjectRepository>();
+builder.Services.AddTransient<SceneRepository>();
 builder.Services.AddTransient<DialogueService>();
 builder.Services.AddMemoryCache();
 

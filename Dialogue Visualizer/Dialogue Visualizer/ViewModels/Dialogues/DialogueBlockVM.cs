@@ -1,9 +1,10 @@
 ﻿using Dialogue_Visualizer.Models;
 
-namespace Dialogue_Visualizer.ViewModels.Structs
+namespace Dialogue_Visualizer.ViewModels.Dialogues
 {
     public class DialogueBlockVM
     {
+        public int Id { get; set; }
         public Dialogue Dialogue { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -11,7 +12,8 @@ namespace Dialogue_Visualizer.ViewModels.Structs
         public int Height { get; set; }
         public string Color { get; set; } = string.Empty;
 
-        public DialogueBlockVM() {
+        public DialogueBlockVM()
+        {
             Dialogue = new Dialogue();
         }
     }

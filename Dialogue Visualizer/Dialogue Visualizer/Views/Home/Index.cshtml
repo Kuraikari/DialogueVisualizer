@@ -9,26 +9,34 @@
             <th scope="col">ID</th>
             <th scope="col">Speaker</th>
             <th scope="col">Text</th>
-            <th scope="col"></th>
+            <th scope="col">Scene</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.DialogueBlocks)
+        @for(int i = 0; i < Model.Projects.FirstOrDefault()?.Scenes.Count; i++)
         {
-            <tr scope="row">
-                <td scope="col">
-                    @Model.DialogueBlocks.ToList().IndexOf(item)
-                </td>
-                <td scope="col">
-                    @item.Dialogue.Speaker
-                </td>
-                <td scope="col">
-                    @item.Dialogue.Text
-                </td>
-                <td scope="col">
-
-                </td>
-            </tr>
+            foreach (var item in Model?.Projects?.FirstOrDefault()?.Scenes[i]?.Blocks)
+            {
+                <tr scope="row">
+                    <td scope="col">
+                        @item.Id
+                    </td>
+                    <td scope="col">
+                        @item.Dialogue.Speaker
+                    </td>
+                    <td scope="col">
+                        @item.Dialogue.Text
+                    </td>
+                    <td scope="col">
+                        @{
+                            var scene = Model.Projects.FirstOrDefault()?.Scenes.FirstOrDefault(y => y.Blocks.FirstOrDefault(b => b.Id == item.Id) != null);
+                            var sceneName = scene != null ? scene.Name : "No Scene";
+                        }
+                        @sceneName
+                    </td>
+                </tr>
+            }
+            
         }
     </tbody>
 </table>

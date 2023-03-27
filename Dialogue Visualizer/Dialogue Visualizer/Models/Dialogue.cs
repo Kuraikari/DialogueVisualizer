@@ -12,8 +12,7 @@ namespace Dialogue_Visualizer.Models
         [Required]
         public string Text { get; set; } = string.Empty;
         public int Order { get; set; }
-        public bool IsQuestion { get; set; }
-        public int FollowUpTextId { get; set; }
-        public Scene Scene { get; set; } = new Scene();
+        public bool IsQuestion { get; set; } = false;
+        public IList<Dialogue> FollowUpDialogue { get; set; } = new List<Dialogue>();
     }
 }
