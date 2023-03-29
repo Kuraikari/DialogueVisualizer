@@ -44,7 +44,6 @@ namespace Dialogue_Visualizer.Helpers
                 projectViewModels.Last().Scenes = sceneViewModels;
             }
 
-
             var viewModel = new DialogueViewModel()
             {
                 Projects = projectViewModels

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dialogue_Visualizer.Migrations
 {
     [DbContext(typeof(DialogueDbContext))]
-    [Migration("20230327114657_InitialCreate")]
+    [Migration("20230329081842_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

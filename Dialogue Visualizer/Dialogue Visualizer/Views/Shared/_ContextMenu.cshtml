@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<DialogueBlockVM>
-@{
-}
+
+@Model.First().Color
+
 <contextmenu id="ctxMenu" type="context">
     <menu label="Edit">
         <menu label="Color"
               id="ctxMenuColor"
               data-toggle="modal"
               data-target="#dialogueBlockForm"
-              onclick="$('#contextView').load('@(Url.Action("ContextView", new {func = "Color", model = Model.First()}))')">
+              onclick="$('#contextView').load('@(Url.Action("ContextView", new {func = "Color", blockId = Model.ElementAt(0).Id}))')">
         </menu>
         <menu label="Speaker"
               id="ctxMenuSpeaker">

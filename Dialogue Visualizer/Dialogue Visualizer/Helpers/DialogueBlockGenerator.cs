@@ -10,13 +10,22 @@ namespace Dialogue_Visualizer.Helpers
         {
             Point point = GenerateRandomPoint();
             string color = GenerateRandomHexCode();
+
+            Size size = new(250, 150);
+
+            Point frame = new()
+            {
+                X = (int)(size.Width * 2.5),
+                Y = (int)(size.Height * 2.5)
+            };
+
             var block = new DialogueBlock()
             {
                 Color = color,
-                Height = 150,
-                Width = 250,
-                X = point.X - 250,
-                Y = point.Y - 150,
+                Width = size.Width,
+                Height = size.Height,
+                X = point.X - frame.X,
+                Y = point.Y - frame.Y,
                 Dialogue = new Dialogue()
                 {
                     Text = text,
@@ -39,10 +48,17 @@ namespace Dialogue_Visualizer.Helpers
 
         private static Point GenerateRandomPoint()
         {
+            Size vp = new(1920, 1080);
+            Size hvp = new()
+            {
+                Width = (vp.Width / 2),
+                Height = (vp.Height / 2)
+            };
+
             int x, y;
             Random random = new Random();
-            x = random.Next(1920);
-            y = random.Next(1080);
+            x = random.Next(hvp.Width, vp.Width);
+            y = random.Next(hvp.Height, vp.Height);
             Point point = new(x, y);
             return point;
         }

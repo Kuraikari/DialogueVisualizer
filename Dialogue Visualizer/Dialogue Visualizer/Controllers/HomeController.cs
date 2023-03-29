@@ -6,6 +6,7 @@ using Dialogue_Visualizer.ViewModels.Dialogues;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Dialogue_Visualizer.Controllers
 {
@@ -27,56 +28,127 @@ namespace Dialogue_Visualizer.Controllers
         {
             if (seed)
             {
-                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "Hello fellow young person. How are you doing?"));
-                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("George", "Young? I lived for 75 years!"));
-                AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "I see. I lived for thousands of years. Everyone is young to me."));
+                await AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "Hello fellow young person. How are you doing?"), true);
+                await AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("George", "Young? I lived for 75 years!"), false);
+                await AddDialogueBlock(DialogueBlockGenerator.GenerateDialogueBlock("You", "I see. I lived for thousands of years. Everyone is young to me."), false);
             }
 
             var projects = await _context.Projects
                 .Include(project => project.Scenes)
+                .ThenInclude(scene => scene.DialogueBlocks)
+                .ThenInclude(block => block.Dialogue)
                 .ToListAsync();
             var viewModel = DomainModelToViewModel.ConvertToDialogueViewModel(projects);
 
             return View(viewModel);
         }
 
-        public IActionResult ContextView(string func = "", DialogueBlockVM? dialogueBlock = null)
+        public IActionResult ContextView(string func = "", int blockId = 0)
         {
-            var dialogues = _context.Dialogue.ToList();
-            var blocks = _context.DialogueBlocks.ToList();
-            var test = new { func, model = dialogueBlock};
+            try
+            {
+                var blocks = _context.DialogueBlocks
+                .Include(block => block.Dialogue)
+                .Single(x => x.Id == blockId);
 
-            return PartialView("_DialogueBlockForm", test);
+                var result = new DialogueBlockVM()
+                {
+                    Color = blocks.Color,
+                    Id = blocks.Id,
+                    Dialogue = blocks.Dialogue,
+                    Height = blocks.Height,
+                    Width = blocks.Width,
+                    X = blocks.X,
+                    Y = blocks.Y
+                };
+
+                dynamic test = new { func, model = result };
+
+                return PartialView("_DialogueBlockForm", test);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return Json(e.ToString());
+            }
+            
         }
 
         public async Task<IActionResult> DialogueBlueprints()
         {
             var projects = await _context.Projects
                 .Include(project => project.Scenes)
-                .ThenInclude(scenes => scenes.Select(scene => scene.DialogueBlocks.Select(block => block.Dialogue)))
+                .ThenInclude(scene => scene.DialogueBlocks)
+                .ThenInclude(block => block.Dialogue)
                 .ToListAsync();
             var viewModel = DomainModelToViewModel.ConvertToDialogueViewModel(projects);
 
             return View(viewModel);
         }
 
-        public async Task<IActionResult> GetDialogueBlocks()
+        public async Task<IActionResult> GetDialogueBlocks(int projectId = 1)
         {
-            var dialogues = await _context.Dialogue.ToListAsync();
-            var blocks = await _context.DialogueBlocks.ToListAsync();
-            return Json(blocks);
+            var project = await _context.Projects
+                .Where(p => p.Id == projectId)
+                .OrderBy(x => x.Id)
+                .Include(project => project.Scenes)
+                .ThenInclude(scene => scene.DialogueBlocks)
+                .ThenInclude(block => block.Dialogue)
+                .FirstOrDefaultAsync();
+            IList<Scene>? scenes = null;
+            if (project != null)
+            {
+                scenes = project.Scenes;
+            }
+               
+            return Json(scenes);
         }
 
         [HttpPost]
-        public IActionResult AddDialogueBlock(DialogueBlock block)
+        public async Task<IActionResult> AddDialogueBlock(DialogueBlock block, bool newProject)
         {
             try
             {
                 if (block != null)
                 {
-                    block.Id = _context.DialogueBlocks.Any() ? _context.DialogueBlocks.Max(b  => b.Id) + 1 : 1;
-                    block.Dialogue.Id = _context.Dialogue.Any() ? _context.Dialogue.Max(b => b.Id) + 1 : 1;
-                    _context.DialogueBlocks.Add(block);
+                    if (newProject)
+                    {
+                        IList<Scene> scenes = new List<Scene>();
+                        scenes.Add(new Scene()
+                        {
+                            Name = "Default Scene",
+                            Description = "This is the default Scene",
+                            DialogueBlocks = new List<DialogueBlock>() { block }
+                        });
+
+                        var project = new Project()
+                        {
+                            Name = "Default Project",
+                            Description = "This is the default project",
+                            Scenes = scenes
+                        };
+
+                        await AddProject(project);
+                    }
+                    else
+                    {
+                        var defaultProject = await _context.Projects
+                            .Include(p => p.Scenes)
+                            .ThenInclude(s => s.DialogueBlocks)
+                            .ThenInclude(d => d.Dialogue)
+                            .OrderBy(x => x.Id)
+                            .LastOrDefaultAsync(project => project.Name == "Default Project");
+                            
+                        if (defaultProject != null)
+                        {
+                            if (defaultProject.Scenes.Any())
+                            {
+                                defaultProject.Scenes.Where(s => s.Name == "Default Scene").First().DialogueBlocks.Add(block);
+                                _context.Entry(defaultProject).State = EntityState.Modified;
+                            }
+                        }
+
+                    }
                 }
                 return Json(new { success = true });
             }
@@ -86,20 +158,17 @@ namespace Dialogue_Visualizer.Controllers
             }
             finally
             {
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         [HttpPost]
-        public IActionResult AddProjectAndScene(Project project, Scene scene)
+        public async Task<IActionResult> AddProject(Project project)
         {
             try
             {
-                if (project != null && scene != null)
+                if (project != null)
                 {
-                    project.Id = _context.Projects.Any() ? _context.Projects.Max(b => b.Id) + 1 : 1;
-                    scene.Id = _context.Scene.Any() ? _context.Scene.Max(b => b.Id) + 1 : 1;
-                    project.Scenes.Add(scene);
                     _context.Projects.Add(project);
                 }
                 return Json(new { success = true });
@@ -110,7 +179,7 @@ namespace Dialogue_Visualizer.Controllers
             }
             finally
             {
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 

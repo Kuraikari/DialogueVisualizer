@@ -1,7 +1,11 @@
 ﻿@model Dialogue_Visualizer.ViewModels.Dialogues.DialogueViewModel
 @{
     ViewData["Title"] = "Home Page";
+
+    var projects = Model.Projects;
 }
+
+
 
 <table class="table">
     <thead>
@@ -13,30 +17,30 @@
         </tr>
     </thead>
     <tbody>
-        @for(int i = 0; i < Model.Projects.FirstOrDefault()?.Scenes.Count; i++)
+        @foreach (var project in projects)
         {
-            foreach (var item in Model?.Projects?.FirstOrDefault()?.Scenes[i]?.Blocks)
+            foreach (var scene in project.Scenes)
             {
-                <tr scope="row">
-                    <td scope="col">
-                        @item.Id
-                    </td>
-                    <td scope="col">
-                        @item.Dialogue.Speaker
-                    </td>
-                    <td scope="col">
-                        @item.Dialogue.Text
-                    </td>
-                    <td scope="col">
-                        @{
-                            var scene = Model.Projects.FirstOrDefault()?.Scenes.FirstOrDefault(y => y.Blocks.FirstOrDefault(b => b.Id == item.Id) != null);
-                            var sceneName = scene != null ? scene.Name : "No Scene";
-                        }
-                        @sceneName
-                    </td>
-                </tr>
+                foreach (var item in scene.Blocks)
+                {
+                    <tr scope="row">
+                        <td scope="col">
+                            @item.Id
+                        </td>
+                        <td scope="col">
+                            @item.Dialogue.Speaker
+                        </td>
+                        <td scope="col">
+                            @item.Dialogue.Text
+                        </td>
+                        <td scope="col">
+                            @scene.Name
+                        </td>
+                    </tr>
+                }
             }
-            
         }
+
+        
     </tbody>
 </table>

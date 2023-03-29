@@ -1,6 +1,9 @@
 ﻿@model Dialogue_Visualizer.ViewModels.Dialogues.DialogueViewModel
 @{
     ViewBag.Title = "Dialogue Blueprint";
+
+    Model.SelectedProjectId = 5;
+    Model.SelectedSceneId = 0;
 }
 
 <article>
@@ -11,7 +14,7 @@
 
         </div>
     </div>
-    @await Html.PartialAsync("_ContextMenu", Model.Projects.FirstOrDefault()?.Scenes.FirstOrDefault()?.Blocks)
+    @await Html.PartialAsync("_ContextMenu", Model.Projects.ElementAt(Model.SelectedProjectId).Scenes.ElementAt(Model.SelectedSceneId).Blocks)
     <div id="canvas-outer">
         @*<canvas id="canvas" width="1490" height="890"></canvas>*@
     </div>
@@ -104,42 +107,42 @@
             }
 
             function GetBlocks() {
-                $.get("@Url.Action("GetDialogueBlocks", "Home")", function (blocks) {
-                    $.each(blocks, function (index, block) {
-                        AddNewBlock(block);
-                        const prop = `${block.x}-${block.y}`
-                        diaBlocks[prop] = block;
+                $.get("@Url.Action("GetDialogueBlocks", "Home", new {projectId = Model.SelectedProjectId + 1})", function (scenes) {
+                    $.each(scenes, function (indexScene, scene) {
+                        $.each(scene.dialogueBlocks, function (index, block) {
+                            AddNewBlock(block);
+                            const prop = `${block.x}-${block.y}`
+                            diaBlocks[prop] = block;
 
-                        const idPrefix = 'dialogue-block';
-                        const idSuffix = '';
-                        var elId = `${idPrefix}-${block.id}${idSuffix}`;
-                        var elId2 = `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`;
+                            const idPrefix = 'dialogue-block';
+                            const idSuffix = '';
+                            var elId = `${idPrefix}-${block.id}${idSuffix}`;
+                            var elId2 = `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`;
 
-                        console.log(blocks);
+                            if (Object.keys(diaBlocks).length > 1) {
 
-                        if (Object.keys(diaBlocks).length > 1) {
+                                var connector = new muConnector({
+                                    ele1: `${elId2}`,
+                                    ele2: `${elId}`,
+                                    lineStyle: "4px solid black",
+                                    defaultGap: -35
+                                });
 
-                            var connector = new muConnector({
-                                ele1: `${elId2}`,
-                                ele2: `${elId}`,
-                                lineStyle: "4px solid black",
-                                defaultGap: -35
-                            });
+                                connectors.push(connector);
 
-                            connectors.push(connector);
+                                var diaKeys = Object.keys(diaBlocks);
+                                diaKeys.forEach(key => {
+                                    var elementId = `${idPrefix}-${diaBlocks[key].id}`;
+                                    dragElement(document.getElementById(elementId));
+                                    contextMenu(elementId);
+                                });
 
-                            var diaKeys = Object.keys(diaBlocks);
-                            diaKeys.forEach(key => {
-                                var elementId = `${idPrefix}-${diaBlocks[key].id}`;
-                                dragElement(document.getElementById(elementId));
-                                contextMenu(elementId);
-                            });
-
-                            connectors.forEach(conn => {
-                                conn.Setup(conn, conn.ele1.id);
-                                conn.Setup(conn, conn.ele2.id);
-                            });
-                        }   
+                                connectors.forEach(conn => {
+                                    conn.Setup(conn, conn.ele1.id);
+                                    conn.Setup(conn, conn.ele2.id);
+                                });
+                            }
+                        });
                     });
                 });
             }
