@@ -23,10 +23,15 @@ class HTMLElementBuilder {
         return this.#element;
     }
 
-    CreateElement() {
+    CreateDivElement(id, ...cls) {
         let el = document.createElement("div");
-        el.id = this.id;
-        el.classList.add("dialogue-block");
+        el.classList.add(cls);
+        el.id = id;
+        return el;
+    }
+
+    CreateElement() {
+        let el = this.CreateDivElement(this.id, "dialogue-block");
 
         this.styles.forEach(style => {
             el.style.setProperty(style.property, style.value);
@@ -41,20 +46,26 @@ class HTMLElementBuilder {
         el.setAttribute("posX", this.position.x);
         el.setAttribute("posY", this.position.y);
 
-
-        let elContent = document.createElement("div");
-        elContent.id = this.id + "-content";
-        elContent.classList.add("dialogue-block-content");
+        let elContent = this.CreateDivElement(this.id + "-content", "dialogue-block-content");
         elContent.textContent = this.text;
 
-        let elHeader = document.createElement("div");
-        elHeader.id = this.id + "-header";
-        elHeader.classList.add("header");
+        let elHeader = this.CreateDivElement(this.id + "-header", "dialogue-block-header");
 
         el.append(elHeader, elContent);
 
         this.#element = el;
 
+        return this;
+    }
+
+    CreateContainer(name) {
+        let el = document.createElement("div");
+        el.id = name + '-scene';
+        el.classList.add("dialogue-scene");
+
+        el.append(this.#element);
+
+        this.#element = el;
         return this;
     }
 }

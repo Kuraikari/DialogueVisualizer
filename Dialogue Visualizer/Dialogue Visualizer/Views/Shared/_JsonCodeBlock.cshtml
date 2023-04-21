@@ -1,0 +1,19 @@
+﻿@model Dialogue_Visualizer.ViewModels.Dialogues.DialogueViewModel
+
+<div class="code-block-wrapper">
+    <pre class="code-block json"><code id="code-block-json"></code></pre>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+        let test = {
+            MyMom: "IsLove",
+            YourMom: "GayBruh"
+        }
+        var codeBlockManager = new CodeBlockManager("code-block-json-content");
+        codeBlockManager.codeText = JSON.stringify(test);
+        codeBlockManager.parseCode();
+
+        console.log(codeBlockManager);
+    });
+</script>

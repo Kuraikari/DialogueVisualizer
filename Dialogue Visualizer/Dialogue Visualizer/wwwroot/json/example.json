@@ -1,0 +1,7 @@
+{
+  "speaker": "text",
+  "when": {
+    "time": 600,
+    "married": true
+  }
+}

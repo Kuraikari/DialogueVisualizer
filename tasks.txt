@@ -1,0 +1,8 @@
+I need to finish the updated view
+	> BlueprintOverview -> CurrentProject -> "Canvas" -> Scenes -> Blocks
+		> Blocks Header gets a new span with a close / bin icon, to delete that said block
+
+I also need to add the CRUD functionality for the blueprint view
+	> DblClick on Canvas -> Create new Block
+	> Delete
+	> DblClick on Block -> Show Edit Form

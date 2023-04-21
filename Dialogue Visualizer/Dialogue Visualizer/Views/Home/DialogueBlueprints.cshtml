@@ -6,6 +6,9 @@
     Model.SelectedSceneId = 0;
 }
 
+@await Html.PartialAsync("_JsonCodeBlock", Model)
+
+
 <article>
     <div class="project-details">
         <div class="project">
@@ -69,7 +72,7 @@
 
             function AddNewBlock(block) {
                 var dimensions = {
-                    h: (block.height > 0) ? block.height : 100,
+                    h: (block.height > 0) ? block.height : 150,
                     w: (block.width > 0) ? block.width : 250
                 }
 
@@ -80,21 +83,13 @@
 
                 var style = [
                     {
-                        property: `border`,
-                        value: `black 1px solid`
-                    },
-                    {
-                        property: `border-radius`,
-                        value: `4px`
+                        property: `border-color`,
+                        value: `${block.color}`
                     },
                     {
                         property: `background-color`,
                         value: `${block.color}`
                     },
-                    {
-                        property: `text-align`,
-                        value: `center;`
-                    }
                 ];
 
                 const idPrefix = 'dialogue-block';
@@ -115,9 +110,8 @@
                             diaBlocks[prop] = block;
 
                             const idPrefix = 'dialogue-block';
-                            const idSuffix = '';
-                            var elId = `${idPrefix}-${block.id}${idSuffix}`;
-                            var elId2 = `${idPrefix}-${(block.dialogue.id - 1)}${idSuffix}`;
+                            var elId = `${idPrefix}-${block.id}`;
+                            var elId2 = `${idPrefix}-${(block.dialogue.id - 1)}`;
 
                             if (Object.keys(diaBlocks).length > 1) {
 
@@ -133,7 +127,7 @@
                                 var diaKeys = Object.keys(diaBlocks);
                                 diaKeys.forEach(key => {
                                     var elementId = `${idPrefix}-${diaBlocks[key].id}`;
-                                    dragElement(document.getElementById(elementId));
+                                    // dragElement(document.getElementById(elementId));
                                     contextMenu(elementId);
                                 });
 
